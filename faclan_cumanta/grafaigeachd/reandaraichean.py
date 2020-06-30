@@ -64,3 +64,12 @@ class Reandaraiche():
         )
         self.co_theacsa.text_path("Fàilte")
         self.co_theacsa.stroke()
+
+def demo():
+    """
+    Generates a test page in the current directory.
+    """
+    r = Reandaraiche('test.pdf')
+    r.dèan_loidhneachan()
+    r.dèan_dealbh()
+    r.sgrìobh()
