@@ -102,6 +102,23 @@ def faclan_le_fuaim_aig_am_meadhan(
         co_mheud=co_mheud
     )
 
+def faclan_le_eas_preisean_riaghailteach(
+        pàtran, 
+        seata=None, 
+        baid=None, 
+        seòrsaich_le=None, 
+        co_mheud=None
+    ):
+    return criathraich_faclan(
+        Facal.select().where(
+            Facal.litrichean.iregexp(pàtran)
+        ), 
+        seata=seata, 
+        baid=baid, 
+        seòrsaich_le=seòrsaich_le,
+        co_mheud=co_mheud
+    )
+
 # fuaimean
 def fuaim_tuaireamach():
     return Fuaim.select().order_by(fn.Random()).first()

@@ -1,9 +1,17 @@
 # faclan_cumanta.pròiseact.dàta.modailean
 
 # peewee
-from peewee import *
+from peewee import (
+    SqliteDatabase,
+    Model,
+    CharField,
+    IntegerField
+)
 
-db = SqliteDatabase('db.faclan.sqlite3')
+# faclan_cumanta
+from faclan_cumanta.pròiseact import rèiteachadh
+
+db = SqliteDatabase(None)
 
 class Facal(Model):
     litrichean = CharField()
@@ -27,7 +35,8 @@ def dèan_facal(facal, seata, baid):
 def dèan_fuaim(facal, seata, baid):
     return Fuaim.create(litrichean=facal, seata=seata, baid=baid)
 
-def tòisich():
+def tòisich(ainm_stòir_dhàta=None):
+    db.init(ainm_stòir_dhàta or rèiteachadh.AINM_STÒIR_DHÀTA)
     db.connect()
     db.create_tables([Facal, Fuaim])
 

@@ -3,9 +3,6 @@
 # cairo
 import cairo
 
-# papersizes
-import papersizes
-
 # faclan_cumanta
 from faclan_cumanta.pròiseact import rèiteachadh
 
