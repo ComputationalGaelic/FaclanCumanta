@@ -1,4 +1,4 @@
-# faclan_cumanta.modailean
+# faclan_cumanta.pròiseact.dàta.modailean
 
 # peewee
 from peewee import *

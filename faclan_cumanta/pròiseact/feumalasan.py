@@ -1,4 +1,4 @@
-# faclan_cumanta.feumalasan
+# faclan_cumanta.pròiseact.feumalasan
 
 # python
 import inspect
@@ -13,7 +13,7 @@ def pasgan_pròiseict():
     )
 
 def pasgan_faclair():
-    return '{0}/faclair'.format(pasgan_pròiseict())
+    return os.path.join(pasgan_pròiseict(), 'faclair')
 
 def faigh_faidhlichen_faclair():
-    return glob.glob('{0}/*.json'.format(pasgan_faclair()))
+    return glob.glob(os.path.join(pasgan_faclair(), '*.json'))

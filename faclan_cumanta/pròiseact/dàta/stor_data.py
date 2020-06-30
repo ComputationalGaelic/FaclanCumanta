@@ -1,4 +1,4 @@
-# faclan_cumanta.stòr_dàta
+# faclan_cumanta.pròiseact.dàta.stòr_dàta
 
 # python
 import json
@@ -7,7 +7,7 @@ import json
 from peewee import fn
 
 # faclan_cumanta
-from .feumalasan import faigh_faidhlichen_faclair
+from ..feumalasan import faigh_faidhlichen_faclair
 from .modailean import (
     Facal,
     Fuaim,
@@ -26,23 +26,81 @@ def lòdaich():
                 dèanadair(facal, seata, baid)
 
 # faclan
-def faclan_le_fuaim_aig_an_toisich(fuaim, co_mheud=None):
-    return Facal.select().where(
-        Facal.litrichean.startswith(fuaim)
+foincseanan_seòrsa = {
+    'litir': Facal.litrichean,
+    'seata': Facal.seata,
+    'baid': Facal.baid,
+    'air thuairmeas': fn.Random(),
+}
+def criathraich_faclan(
+        faclan, 
+        seata=None, 
+        baid=None, 
+        seòrsaich_le=None, 
+        co_mheud=None
+    ):
+    if seata:
+        faclan = faclan.where(Facal.seata == seata)
+    if baid:
+        faclan = faclan.where(Facal.baid == baid)
+    if foincseanan_seòrsa.get(seòrsaich_le):
+        faclan = faclan.order_by(foincseanan_seòrsa.get(seòrsaich_le))
+    if co_mheud:
+        faclan = faclan.limit(co_mheud)
+    return faclan
+
+def faclan_le_fuaim_aig_an_toisich(
+        fuaim, 
+        seata=None, 
+        baid=None, 
+        seòrsaich_le=None, 
+        co_mheud=None
+    ):
+    return criathraich_faclan(
+        Facal.select().where(
+            Facal.litrichean.startswith(fuaim)
+        ), 
+        seata=seata, 
+        baid=baid, 
+        seòrsaich_le=seòrsaich_le,
+        co_mheud=co_mheud
+    )
+    
+def faclan_le_fuaim_aig_an_deireadh(
+        fuaim, 
+        seata=None, 
+        baid=None, 
+        seòrsaich_le=None, 
+        co_mheud=None
+    ):
+    return criathraich_faclan(
+        Facal.select().where(
+            Facal.litrichean.endswith(fuaim)
+        ), 
+        seata=seata, 
+        baid=baid, 
+        seòrsaich_le=seòrsaich_le,
+        co_mheud=co_mheud
     )
 
-def faclan_le_fuaim_aig_an_deireadh(fuaim, co_mheud=None):
-    return Facal.select().where(
-        Facal.litrichean.endswith(fuaim)
+def faclan_le_fuaim_aig_am_meadhan(
+        fuaim, 
+        seata=None, 
+        baid=None, 
+        seòrsaich_le=None, 
+        co_mheud=None
+    ):
+    return criathraich_faclan(
+        Facal.select().where(
+            Facal.litrichean.contains(fuaim) &
+            ~(Facal.litrichean.startswith(fuaim)) & 
+            ~(Facal.litrichean.endswith(fuaim))
+        ), 
+        seata=seata, 
+        baid=baid, 
+        seòrsaich_le=seòrsaich_le,
+        co_mheud=co_mheud
     )
-
-def faclan_le_fuaim_aig_am_meadhan(fuaim, co_mheud=None):
-    return Facal.select().where(
-        Facal.litrichean.contains(fuaim) &
-        ~(Facal.litrichean.startswith(fuaim)) & 
-        ~(Facal.litrichean.endswith(fuaim))
-    )
-    #Facal.litrichean.iregexp(fuaim)
 
 # fuaimean
 def fuaim_tuaireamach():
