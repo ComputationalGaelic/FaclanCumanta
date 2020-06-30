@@ -15,8 +15,8 @@ from .modailean import (
     làimhsiche_modail
 )
 
-def lòdaich():
-    tòisich()
+def lòdaich(ainm_stòir_dhàta=None):
+    tòisich(ainm_stòir_dhàta = ainm_stòir_dhàta)
     for ràs in faigh_faidhlichen_faclair():
         dàta = json.load(open(ràs))
         dèanadair = làimhsiche_modail().get(dàta['type'])
@@ -32,6 +32,7 @@ foincseanan_seòrsa = {
     'baid': Facal.baid,
     'air thuairmeas': fn.Random(),
 }
+
 def criathraich_faclan(
         faclan, 
         seata=None, 

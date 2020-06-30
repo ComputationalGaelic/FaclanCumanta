@@ -9,14 +9,15 @@ from peewee import SqliteDatabase
 # faclan_cumanta
 from faclan_cumanta.pròiseact.dàta import modailean
 
-TEST_DB = 'test_db.faclan.sqlite3'
+# tests
+from . import settings
 
 def test_db():
     assert modailean.db
     assert type(modailean.db) is SqliteDatabase
 
 def test_dèan_facal():
-    modailean.tòisich(ainm_stòir_dhàta=TEST_DB)
+    modailean.tòisich(ainm_stòir_dhàta=settings.TEST_DB)
     result = modailean.dèan_facal('test_facal', 'test_seata', 100)
     assert result
     assert isinstance(result, modailean.Facal)
@@ -25,7 +26,7 @@ def test_dèan_facal():
     assert result.baid == 100
 
 def test_dèan_fuaim():
-    modailean.tòisich(ainm_stòir_dhàta=TEST_DB)
+    modailean.tòisich(ainm_stòir_dhàta=settings.TEST_DB)
     result = modailean.dèan_fuaim('test_fuaim', 'test_seata', 100)
     assert result
     assert isinstance(result, modailean.Fuaim)
@@ -34,7 +35,7 @@ def test_dèan_fuaim():
     assert result.baid == 100
 
 def test_tòisich():
-    modailean.tòisich(ainm_stòir_dhàta=TEST_DB)
+    modailean.tòisich(ainm_stòir_dhàta=settings.TEST_DB)
     tables = modailean.db.get_tables()
     assert 'facal' in tables
     assert 'fuaim' in tables
