@@ -17,6 +17,8 @@ from .modailean import (
 
 def lòdaich(ainm_stòir_dhàta=None):
     tòisich(ainm_stòir_dhàta = ainm_stòir_dhàta)
+    Facal.delete().execute()
+    Fuaim.delete().execute()
     for ràs in faigh_faidhlichen_faclair():
         dàta = json.load(open(ràs))
         dèanadair = làimhsiche_modail().get(dàta['type'])
@@ -112,7 +114,7 @@ def faclan_le_eas_preisean_riaghailteach(
     ):
     return criathraich_faclan(
         Facal.select().where(
-            Facal.litrichean.iregexp(pàtran)
+            Facal.litrichean.regexp(pàtran)
         ), 
         seata=seata, 
         baid=baid, 
