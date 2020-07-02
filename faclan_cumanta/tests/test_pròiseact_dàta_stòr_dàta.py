@@ -124,3 +124,9 @@ def test_faclan_le_fuaim_aig_am_meadhan():
     assert result.count() == 1
     assert result[0].litrichean == settings.TEST_LIOSTA_FACAIL[3]
 
+def test_facal_nas_fhaide():
+    _lòdaich_dàta()
+    assert stòr_dàta.facal_nas_fhaide() == sorted(
+        settings.TEST_LIOSTA_FACAIL, 
+        key=len
+    )[-1]

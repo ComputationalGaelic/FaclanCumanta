@@ -122,6 +122,9 @@ def faclan_le_eas_preisean_riaghailteach(
         co_mheud=co_mheud
     )
 
+def facal_nas_fhaide():
+    return Facal.select().order_by(fn.LENGTH(Facal.litrichean).desc()).first()
+
 # fuaimean
 def fuaim_tuaireamach():
     return Fuaim.select().order_by(fn.Random()).first()
