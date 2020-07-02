@@ -9,3 +9,7 @@ PONG_GU_MÌLEMEATAIR = 72/25.4
 # cruth_clò
 AINM_CRUTH_CLÒ = "Sassoon Primary"
 
+ÀIRDAN_RAOINTEAN = {
+    'bann-cinn' : 1,
+    'bann-coise' : 1,
+}

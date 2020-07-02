@@ -10,6 +10,9 @@ import cairo
 from papersizes.parse import paper_size
 
 # faclan_cumanta
+from . import bun_roghainnean
+from .aonadan import òirlich_gu_pongan
+from .mìrean import CliathLitir
 from faclan_cumanta.pròiseact import (
     feumalasan,
     rèiteachadh
@@ -74,7 +77,7 @@ class ReandaraicheDeuchainne:
         self.co_theacsa.text_path("Fàilte")
         self.co_theacsa.stroke()
 
-def demo():
+def demo_01():
     """
     Generates a test page in the current directory.
     """
@@ -84,12 +87,18 @@ def demo():
     r.sgrìobh()
 
 class Reandaraiche:
+    cruth_clò = rèiteachadh.CRUTH_CLÒ
+    meud_cruth_clò = rèiteachadh.MEUD_CRUTH_CLÒ
+    meud_duilleige = rèiteachadh.MEUD_DUILLEIGE
+    meud_loidhne = rèiteachadh.MEUD_LOIDHNE
+
     def __init__(self, coltas_duilleige, slighe_faidhle):
         self.slighe_faidhle = slighe_faidhle
         with open(
             feumalasan.faigh_faidhle_coltas_duilleige(coltas_duilleige)
         ) as f:
             self.coltas_duilleige = json.load(f)
+        self.tòisich()
 
     def sgrìobh(self):
         self.uachdar.show_page()
@@ -98,8 +107,8 @@ class Reandaraiche:
         self.meud_duilleige = paper_size(
             self.coltas_duilleige['meud agus comhair']
         )
-        self.marghan = self.coltas_duilleige['marghan']
-        self.beàrnadh = self.coltas_duilleige['beàrnadh']
+        self.marghan = òirlich_gu_pongan(self.coltas_duilleige['marghan'])
+        self.beàrnadh = òirlich_gu_pongan(self.coltas_duilleige['beàrnadh'])
         self.raointean = self.coltas_duilleige['raointean']
         self.leud_cuirp = self.meud_duilleige.width - self.marghan * 2
         self.uachdar = cairo.PDFSurface(
@@ -109,18 +118,65 @@ class Reandaraiche:
         )
         self.co_theacsa = cairo.Context(self.uachdar)
 
-    def dèan(self):
+    def dèan(self, faclan):
         self.dèan_bann_cinn()
         self.dèan_bann_coise()
+        self.dèan_corp(faclan)
 
     def dèan_bann_cinn(self):
-        àirde = self.raointean['bann-cinn']
+        àirde = òirlich_gu_pongan(self.raointean['bann-cinn']['àirde'])
         self.dèan_ceart_cheàrnach(self.marghan, àirde)
         
     def dèan_bann_coise(self):
-        àirde = self.raointean['bann-coise']
+        àirde = òirlich_gu_pongan(self.raointean['bann-coise']['àirde'])
         y = self.meud_duilleige.height - àirde - self.marghan
         self.dèan_ceart_cheàrnach(y, àirde)
+
+    def dèan_corp(self, faclan):
+        self.co_theacsa.select_font_face(
+            self.cruth_clò, 
+            cairo.FontSlant.NORMAL, 
+            cairo.FontWeight.NORMAL
+        )
+        self.co_theacsa.set_font_size(self.meud_cruth_clò)
+        if 'àirde' in self.raointean['corp']:
+            àirde = òirlich_gu_pongan(self.raointean['corp']['àirde'])
+        else:
+            àirde = self.àirde_cuirp_bunaiteach()
+        y = self.marghan + self.beàrnadh + òirlich_gu_pongan(
+            self.raointean['bann-cinn']['àirde']
+        )
+        self.dèan_ceart_cheàrnach(y, àirde)
+        self.co_theacsa.save()
+        self.co_theacsa.translate(self.marghan, y)
+        tx = self.beàrnadh
+        ty = self.beàrnadh
+        for facal in faclan:
+            cl = CliathLitir(facal, self.co_theacsa)
+            cl.dèan(tx, ty)
+            ty += cl.àirde + self.beàrnadh
+        self.co_theacsa.restore()
+
+    def àirde_cuirp_bunaiteach(self):
+        return self.meud_duilleige.height - sum(
+            (
+                self.faigh_àirde_raoin('bann-cinn'),
+                self.faigh_àirde_raoin('bann-coise'),
+                self.marghan * 2,
+                self.beàrnadh * 2
+            )
+        )
+
+    def faigh_àirde_raoin(self, ainm_raoin):
+        if ainm_raoin in self.raointean:
+            return òirlich_gu_pongan(
+                self.raointean[ainm_raoin].get(
+                    'àirde',
+                    bun_roghainnean.ÀIRDAN_RAOINTEAN[ainm_raoin]
+                )
+            )
+        else:
+            return 0
 
     def dèan_ceart_cheàrnach(self, y, àirde):
         self.co_theacsa.set_source_rgb(0.1, 0.1, 0.1)
@@ -132,3 +188,16 @@ class Reandaraiche:
             àirde
         )
         self.co_theacsa.stroke()
+
+def demo_02():
+    """
+    Generates a test page in the current directory.
+    """
+    from faclan_cumanta.pròiseact.dàta.modailean import tòisich
+    from faclan_cumanta.pròiseact.dàta.stòr_dàta import faclan_le_fuaim_aig_an_toisich
+    tòisich()
+    r = Reandaraiche('eisimpleir', 'test_raointean.pdf')
+    r.dèan(
+        [f.litrichean for f in faclan_le_fuaim_aig_an_toisich('bh', co_mheud=4)]
+    )
+    r.sgrìobh()
