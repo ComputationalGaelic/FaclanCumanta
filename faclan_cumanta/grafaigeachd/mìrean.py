@@ -2,6 +2,21 @@
 
 from .aonadan import òirlich_gu_pongan
 
+class CliathFaclan:
+    def __init__(self, faclan, reandaraiche):
+        self.reandaraiche = reandaraiche
+        self.faclan = [
+            CliathLitir(
+                f.litrichean, 
+                self.reandaraiche.co_theacsa
+            ) for f in faclan
+        ]
+
+    def dèan(self, x, y, beàrnadh):
+        for facal in self.faclan:
+            facal.dèan(x, y)
+            y += facal.àirde + beàrnadh
+
 class CliathLitir:
     def __init__(self, litrichean, co_theacsa):
         self.litrichean = litrichean

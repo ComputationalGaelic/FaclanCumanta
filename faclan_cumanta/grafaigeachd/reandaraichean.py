@@ -12,7 +12,7 @@ from papersizes.parse import paper_size
 # faclan_cumanta
 from . import bun_roghainnean
 from .aonadan import òirlich_gu_pongan
-from .mìrean import CliathLitir
+from .mìrean import CliathFaclan
 from faclan_cumanta.pròiseact import (
     feumalasan,
     rèiteachadh
@@ -149,12 +149,8 @@ class Reandaraiche:
         self.dèan_ceart_cheàrnach(y, àirde)
         self.co_theacsa.save()
         self.co_theacsa.translate(self.marghan, y)
-        tx = self.beàrnadh
-        ty = self.beàrnadh
-        for facal in faclan:
-            cl = CliathLitir(facal, self.co_theacsa)
-            cl.dèan(tx, ty)
-            ty += cl.àirde + self.beàrnadh
+        cliath_faclan = CliathFaclan(faclan, self)
+        cliath_faclan.dèan(self.beàrnadh, self.beàrnadh, self.beàrnadh)
         self.co_theacsa.restore()
 
     def àirde_cuirp_bunaiteach(self):
@@ -197,7 +193,5 @@ def demo_02():
     from faclan_cumanta.pròiseact.dàta.stòr_dàta import faclan_le_fuaim_aig_an_toisich
     tòisich()
     r = Reandaraiche('eisimpleir', 'test_raointean.pdf')
-    r.dèan(
-        [f.litrichean for f in faclan_le_fuaim_aig_an_toisich('bh', co_mheud=4)]
-    )
+    r.dèan(faclan_le_fuaim_aig_an_toisich('bh', co_mheud=4))
     r.sgrìobh()
